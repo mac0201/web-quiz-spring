@@ -1,4 +1,4 @@
-package engine.model;
+package engine.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

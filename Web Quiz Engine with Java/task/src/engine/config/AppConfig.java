@@ -1,6 +1,7 @@
 package engine.config;
 
 import engine.WebQuizEngine;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,11 @@ public class AppConfig {
     @Bean
     public Logger appLogger() {
         return LoggerFactory.getLogger(WebQuizEngine.class);
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
 }
