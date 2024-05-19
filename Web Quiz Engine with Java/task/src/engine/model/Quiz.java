@@ -6,18 +6,30 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
+@Entity
+@Table(name = "quizzes")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class Quiz {
-    private int id;
+    @Id
+    @GeneratedValue(generator = "quiz_seq")
+    @SequenceGenerator(name = "quiz_seq", allocationSize = 1, initialValue = 1)
+    private long id;
     private String title;
     private String text;
+    @ElementCollection
+    @Fetch(FetchMode.SUBSELECT)
     private List<String> options;
     @JsonIgnore
-    private int answer;
+    @ElementCollection
+    private Set<Integer> answer;
 }
