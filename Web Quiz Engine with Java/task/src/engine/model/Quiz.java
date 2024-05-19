@@ -32,4 +32,8 @@ public class Quiz {
     @JsonIgnore
     @ElementCollection
     private Set<Integer> answer;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 }

@@ -1,11 +1,14 @@
 package engine.controller;
 
 import engine.model.Quiz;
+import engine.model.User;
 import engine.model.dto.QuizCreateDTO;
 import engine.model.dto.QuizResponseDTO;
 import engine.model.dto.QuizSolveDTO;
 import engine.service.QuizService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +29,19 @@ public class QuizController {
     }
 
     @GetMapping("/{id}")
-    public @ResponseBody Quiz getById(@PathVariable int id) {
+    public @ResponseBody Quiz getById(@PathVariable long id) {
         return quizService.getById(id);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable long id, @AuthenticationPrincipal User user) {
+        quizService.delete(id, user);
+    }
+
     @PostMapping
-    public @ResponseBody Quiz create(@Valid @RequestBody QuizCreateDTO quizDTO) {
-        return quizService.create(quizDTO);
+    public @ResponseBody Quiz create(@Valid @RequestBody QuizCreateDTO quizDTO, @AuthenticationPrincipal User user) {
+        return quizService.create(quizDTO, user);
     }
 
     @PostMapping("{id}/solve")
