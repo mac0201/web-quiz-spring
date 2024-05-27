@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 @AllArgsConstructor
@@ -39,5 +40,10 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return getUser(email);
+    }
+
+    public String userInfo(User user) {
+        User user2 = (User) loadUserByUsername(user.getEmail());
+        return user2.toString();
     }
 }

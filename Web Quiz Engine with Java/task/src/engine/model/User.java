@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,9 +28,18 @@ public class User implements UserDetails {
     @ToString.Exclude
     private String password;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     @OneToMany(mappedBy = "user")
-    private List<Quiz> quizList;
+    private List<Quiz> createdQuizzes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuizCompletion> completedQuizzes = new ArrayList<>();
+
+    public void addCompletion(QuizCompletion quizCompletion) {
+        quizCompletion.setUser(this);
+        System.out.println("adding quiz...");
+        completedQuizzes.add(quizCompletion);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
