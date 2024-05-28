@@ -27,7 +27,7 @@ public class QuizCompletion {
     @JoinColumn(name = "user")
     private User user;
 
-    public QuizCompletion(User user, int quizId, LocalDateTime completedAt) {
+    public QuizCompletion(User user, long quizId, LocalDateTime completedAt) {
         this.user = user;
         this.userId = user.getId();
         this.quizId = quizId;

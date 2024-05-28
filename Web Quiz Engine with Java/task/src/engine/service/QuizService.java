@@ -63,7 +63,7 @@ public class QuizService {
     }
 
     @Transactional
-    public QuizResponseDTO solve(int quizId, Set<Integer> clientAnswers, String userEmail) {
+    public QuizResponseDTO solve(long quizId, Set<Integer> clientAnswers, String userEmail) {
         Quiz quiz = getByIdInternal(quizId);
         boolean solved = isSolved(clientAnswers, quiz);
         // update users completed quizzes

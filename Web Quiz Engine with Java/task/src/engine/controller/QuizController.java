@@ -46,7 +46,7 @@ public class QuizController {
     }
 
     @PostMapping("/{id}/solve")
-    public @ResponseBody QuizResponseDTO solveQuiz(@PathVariable int id, @Valid @RequestBody QuizSolveDTO dto,
+    public @ResponseBody QuizResponseDTO solveQuiz(@PathVariable long id, @Valid @RequestBody QuizSolveDTO dto,
                                                    @AuthenticationPrincipal User user) {
         return quizService.solve(id, dto.getAnswer(), user.getEmail());
     }
