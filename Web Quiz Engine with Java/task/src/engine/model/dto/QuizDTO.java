@@ -15,7 +15,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
 public class QuizDTO {
-    private int id;
+    private long id;
     @NotEmpty
     private String title;
     @NotEmpty

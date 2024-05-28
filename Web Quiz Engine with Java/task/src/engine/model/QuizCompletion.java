@@ -33,5 +33,4 @@ public class QuizCompletion {
         this.quizId = quizId;
         this.completedAt = completedAt;
     }
-
 }

@@ -1,6 +1,5 @@
 package engine.controller;
 
-import engine.model.Quiz;
 import engine.model.QuizCompletion;
 import engine.model.User;
 import engine.model.dto.QuizCreateDTO;
@@ -16,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/quizzes")
@@ -31,6 +29,11 @@ public class QuizController {
         return quizService.getAllPaginated(page);
     }
 
+    @PostMapping
+    public @ResponseBody QuizDTO create(@Valid @RequestBody QuizCreateDTO quizDTO, @AuthenticationPrincipal User user) {
+        return quizService.create(quizDTO, user);
+    }
+
     @GetMapping("/{id}")
     public @ResponseBody QuizDTO getById(@PathVariable long id) {
         return quizService.getById(id);
@@ -42,17 +45,13 @@ public class QuizController {
         quizService.delete(id, user);
     }
 
-    @PostMapping
-    public @ResponseBody QuizDTO create(@Valid @RequestBody QuizCreateDTO quizDTO, @AuthenticationPrincipal User user) {
-        return quizService.create(quizDTO, user);
-    }
-
     @PostMapping("/{id}/solve")
     public @ResponseBody QuizResponseDTO solveQuiz(@PathVariable int id, @Valid @RequestBody QuizSolveDTO dto,
                                                    @AuthenticationPrincipal User user) {
         return quizService.solve(id, dto.getAnswer(), user.getEmail());
     }
 
+    // Get completed quizzes of current authenticated user
     @GetMapping("/completed")
     public @ResponseBody Page<QuizCompletion> getCompletedQuizzes(@RequestParam int page, @AuthenticationPrincipal User user) {
         return quizService.getSolvedByUser(page, user.getId());

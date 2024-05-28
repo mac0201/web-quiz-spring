@@ -1,0 +1,311 @@
+openapi: 3.0.3
+info:
+  title: Web Quiz Engine - OpenAPI 3.0
+  description: Web Quiz Engine - OpenAPI 3.0
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8889'
+paths:
+  /api/register:
+    post:
+      tags:
+        - User
+      summary: Create user
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationDTO'
+      responses:
+        '200':
+          description: registration successful
+        '400':
+          description: invalid data provided in request body
+
+  /api/quizzes:
+    get:
+      tags:
+        - Quiz
+      summary: Get all quizzes
+      description: Retrieves a paginated list of all available quizzes
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: The zero-based index of the page to retrieve
+          example: '/api/quizzes?page=0'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PageableWithQuizDTO'
+                minItems: 0
+                maxItems: 10
+        '400':
+          description: Bad request - problem with query
+        '401':
+          description: Unauthorized
+
+    post:
+      tags:
+        - Quiz
+      summary: Creates new quiz
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizCreateDTO'
+      responses:
+        '200':
+          description: successful quiz creation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizDTO'
+        '400':
+          description: Bad request - missing or incorrect body parameters
+        '401':
+          description: Unauthorized
+
+  /api/quizzes/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          format: int64
+        required: true
+        description: Numeric ID of the quiz
+
+    get:
+      summary: Get a quiz by ID
+      tags:
+        - Quiz
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizDTO'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Quiz with specified id not found
+
+    delete:
+      summary: Delete quiz by ID
+      tags:
+        - Quiz
+      responses:
+        '204':
+          description: Deletion successful
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Quiz with specified id not found
+
+  /api/quizzes/{id}/solve:
+    post:
+      summary: Solve quiz with specified ID
+      tags:
+        - Quiz
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+            format: int64
+          required: true
+          description: Numeric ID of the quiz to solve
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizSolveDTO'
+      responses:
+        '200':
+          description: Request successful (does not mean quiz was solved)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizResponseDTO'
+        '400':
+          description: Bad request - issue with request body or path variable type
+        '401':
+          description: Unauthorized
+        '404':
+          description: Quiz with specified id not found
+
+  /api/quizzes/completed:
+    get:
+      summary: Get quizzes solved by current user
+      description: Retrieves a paginated list of quizzes completed by the currently authenticated user.
+      tags:
+        - Quiz
+      parameters:
+        - in: query
+          name: page
+          required: true
+          schema:
+            type: integer
+          description: The zero-based index of the page to retrieve
+          example: '/api/quizzes/completed?page=0'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageableWithQuizCompletion'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+components:
+  schemas:
+    UserRegistrationDTO:
+      type: object
+      description: "Object sent to the server for registering users"
+      properties:
+        email:
+          type: string
+          format: email
+          pattern: '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
+          example: 'user@mail.com'
+        password:
+          type: string
+          minLength: 5
+      required:
+        - email
+        - password
+
+    QuizDTO:
+      type: object
+      description: A data transfer object representing a quiz
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+        title:
+          type: string
+        text:
+          type: string
+        options:
+          description: Answers for the quiz, both correct and incorrect
+          type: array
+          items:
+            type: string
+          minItems: 2
+          example: ['Option 1', 'Option 2', 'Option 3', 'Option 4']
+      required:
+        - title
+        - text
+        - options
+
+    QuizCreateDTO:
+      allOf:
+        - $ref: '#/components/schemas/QuizDTO'
+      type: object
+      description: An extended quiz data transfer object for creating quizzes
+      properties:
+        answer:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: Integers representing indices of the correct answers from the 'options' array. Can be empty or null
+          nullable: true
+          example: [0, 3]
+
+    QuizResponseDTO:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether quiz was solved
+        feedback:
+          type: string
+          description: Feedback for successful or failed attempt
+
+    QuizSolveDTO:
+      type: object
+      properties:
+        answer:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: An array of integers representing the selected answers for the quiz. Can be empty
+          example: [0, 1]
+      required:
+        - answer
+
+    QuizCompletion:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique ID of the solved quiz
+        completedAt:
+          type: string
+          format: date-time
+          description: Date and time of quiz completion
+
+    PageableWithQuizDTO:
+      type: object
+      description: pageable with "content" containing QuizDTO objects
+      allOf:
+        - $ref: '#/components/schemas/Pageable'
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizDTO'
+    PageableWithQuizCompletion:
+      type: object
+      description: pageable with "content" containing QuizCompletion objects
+      allOf:
+        - $ref: '#/components/schemas/Pageable'
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizCompletion'
+    Pageable:
+      type: object
+      description: minimal Pageable query parameters
+      properties:
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+        last:
+          type: boolean
+        first:
+          type: boolean
+        sort:
+          type: object
+        number:
+          type: integer
+        numberOfElements:
+          type: integer
+        size:
+          type: integer
+        empty:
+          type: boolean
+        pageable:
+          type: object

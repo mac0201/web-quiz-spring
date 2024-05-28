@@ -1,6 +1,5 @@
 package engine.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.Data;
 import lombok.ToString;
@@ -28,7 +27,6 @@ public class User implements UserDetails {
     @ToString.Exclude
     private String password;
 
-//    @ToString.Exclude
     @OneToMany(mappedBy = "user")
     private List<Quiz> createdQuizzes;
 
@@ -37,7 +35,6 @@ public class User implements UserDetails {
 
     public void addCompletion(QuizCompletion quizCompletion) {
         quizCompletion.setUser(this);
-        System.out.println("adding quiz...");
         completedQuizzes.add(quizCompletion);
     }
 

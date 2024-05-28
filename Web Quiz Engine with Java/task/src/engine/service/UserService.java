@@ -12,14 +12,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final Logger appLogger;
 
@@ -42,8 +40,4 @@ public class UserService implements UserDetailsService {
         return getUser(email);
     }
 
-    public String userInfo(User user) {
-        User user2 = (User) loadUserByUsername(user.getEmail());
-        return user2.toString();
-    }
 }

@@ -10,7 +10,6 @@ import engine.model.dto.QuizResponseDTO;
 import engine.repository.QuizRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.util.Lists;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +40,11 @@ public class QuizService {
         return modelMapper.map(getByIdInternal(quizId), QuizDTO.class);
     }
 
+    public Page<QuizCompletion> getSolvedByUser(int page, long userId) {
+        return quizRepository.findSolvedByUser(userId, PageRequest.of(page, MAX_PAGE_ELEMENTS));
+    }
+
+    @Transactional
     public QuizDTO create(QuizCreateDTO quizDTO, User user) {
         Quiz quiz = modelMapper.map(quizDTO, Quiz.class);
         quiz.setUser(user);
@@ -58,20 +62,15 @@ public class QuizService {
         appLogger.info("Deleted quiz with id {}", quizId);
     }
 
-    public Page<QuizCompletion> getSolvedByUser(int page, long userId) {
-        return quizRepository.findSolvedByUser(userId, PageRequest.of(page, MAX_PAGE_ELEMENTS));
-    }
-
-
     @Transactional
     public QuizResponseDTO solve(int quizId, Set<Integer> clientAnswers, String userEmail) {
         Quiz quiz = getByIdInternal(quizId);
         boolean solved = isSolved(clientAnswers, quiz);
-
         // update users completed quizzes
         if (solved) {
             User user = userService.getUser(userEmail);
             user.addCompletion(new QuizCompletion(user, quizId, LocalDateTime.now()));
+            appLogger.info("User {} solved quiz with id {}", userEmail, quizId);
         }
         return new QuizResponseDTO(
                 solved,

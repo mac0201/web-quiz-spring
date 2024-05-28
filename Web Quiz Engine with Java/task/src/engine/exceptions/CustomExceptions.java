@@ -10,11 +10,6 @@ public class CustomExceptions {
     @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Quiz with specified ID not found!")
     public static class QuizNotFoundException extends ServiceException {}
 
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Missing body parameters")
-    public static class BodyParametersInvalidException extends ServiceException {}
-
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Email already exists")
     public static class EmailAlreadyExistsException extends ServiceException {}
-
-
 }

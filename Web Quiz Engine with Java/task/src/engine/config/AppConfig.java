@@ -1,6 +1,5 @@
 package engine.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.WebQuizEngine;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
