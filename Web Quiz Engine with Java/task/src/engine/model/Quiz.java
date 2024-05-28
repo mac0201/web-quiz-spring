@@ -13,6 +13,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represents a quiz entity in the persistence layer. It maps to the "quizzes" table in the database.
+ */
 @Entity
 @Table(name = "quizzes")
 @AllArgsConstructor

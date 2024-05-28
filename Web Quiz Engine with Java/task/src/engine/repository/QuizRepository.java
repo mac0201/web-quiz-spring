@@ -12,9 +12,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuizRepository extends CrudRepository<Quiz, Long>, PagingAndSortingRepository<Quiz, Long> {
+    /**
+     * Finds all quizzes with pagination.
+     */
     @Query("SELECT q FROM Quiz q")
     Page<Quiz> findAllPaginated(Pageable pageable);
 
+    /**
+     * Finds quizzes completed by a specific user with pagination.
+     */
     @Query("SELECT q FROM QuizCompletion q WHERE q.userId = :id ORDER BY q.completedAt DESC")
     Page<QuizCompletion> findSolvedByUser(@Param("id") long userId, Pageable pageable);
 }

@@ -8,6 +8,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+/**
+ * Represents a Data Transfer Object for a quiz. Defines the properties used for transferring quiz information between
+ *  the application layers.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter

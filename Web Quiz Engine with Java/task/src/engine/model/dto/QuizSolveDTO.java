@@ -1,10 +1,17 @@
 package engine.model.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+/**
+ * Represents a Data Transfer Object for requests made to solve quizzes.
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class QuizSolveDTO {
+    // Optional
     private Set<Integer> answer;
 }

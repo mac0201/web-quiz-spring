@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * Defines a REST controller for managing quizzes. It handles various HTTP requests related to quiz operations.
+ */
 @RestController
 @RequestMapping(value = "/api/quizzes")
 @AllArgsConstructor
@@ -24,34 +27,51 @@ public class QuizController {
 
     private final QuizService quizService;
 
+    /**
+     * Returns a paginated list of all quizzes.
+     */
     @GetMapping
     public @ResponseBody Page<QuizDTO> getAll(@RequestParam int page) {
         return quizService.getAllPaginated(page);
     }
 
+    /**
+     * Creates a new quiz. Requires a valid and authenticated user.
+     */
     @PostMapping
     public @ResponseBody QuizDTO create(@Valid @RequestBody QuizCreateDTO quizDTO, @AuthenticationPrincipal User user) {
         return quizService.create(quizDTO, user);
     }
 
+    /**
+     * Retrieves a quiz by ID.
+     */
     @GetMapping("/{id}")
     public @ResponseBody QuizDTO getById(@PathVariable long id) {
         return quizService.getById(id);
     }
 
+    /**
+     * Deletes a quiz by id. Requires a valid and authenticated user.
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id, @AuthenticationPrincipal User user) {
         quizService.delete(id, user);
     }
 
+    /**
+     * Solves a quiz with specified id. Requires a valid and authenticated user.
+     */
     @PostMapping("/{id}/solve")
     public @ResponseBody QuizResponseDTO solveQuiz(@PathVariable long id, @Valid @RequestBody QuizSolveDTO dto,
                                                    @AuthenticationPrincipal User user) {
         return quizService.solve(id, dto.getAnswer(), user.getEmail());
     }
 
-    // Get completed quizzes of current authenticated user
+    /**
+     * Retrieves a paginated list of completed quizzes by currently authenticated user.
+     */
     @GetMapping("/completed")
     public @ResponseBody Page<QuizCompletion> getCompletedQuizzes(@RequestParam int page, @AuthenticationPrincipal User user) {
         return quizService.getSolvedByUser(page, user.getId());

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * Defines a REST controller for managing users. It handles various HTTP requests related to user operations.
+ */
 @RestController
 @AllArgsConstructor
 @Validated

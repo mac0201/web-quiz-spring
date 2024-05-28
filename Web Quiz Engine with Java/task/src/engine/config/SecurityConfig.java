@@ -21,11 +21,19 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @Configuration
 public class SecurityConfig {
 
+    /**
+     * Creates and returns a bean of type PasswordEncoder using BCrypt algorithm with a work factor and secure
+     *  random number generator
+     * */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(14, new SecureRandom());
     }
 
+    /**
+     * Configures and returns the Spring Security filter chain. This method defines URL authorization rules and authentication
+     *  mechanisms for the application.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UserService userService) throws Exception {
         http.authorizeHttpRequests(auth -> auth
@@ -41,9 +49,13 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * A custom implementation of AuthenticationEntryPoint interface used to handle unauthorized access attempts.
+     */
     public static class RestAuthEntryPoint implements AuthenticationEntryPoint {
         @Override
         public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
+            // Send 401 UNAUTHORIZED HTTP status code with a message when unauthorized access is made
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         }
     }

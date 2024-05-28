@@ -8,6 +8,10 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 
+/**
+ * Represents a Data Transfer Object used for user registration information. It defines properties required for creating
+ *  a new user account.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Represents a user entity in the persistence layer. It maps to the "users" table in the database.
+ */
 @Entity
 @Table(name = "users")
 @Data
