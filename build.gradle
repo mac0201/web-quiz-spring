@@ -50,6 +50,15 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'utf-8'
     }
+
+    tasks.withType(Test) {
+        useJUnitPlatform()
+
+        testLogging {     // This is for logging and can be removed.
+            events("passed", "skipped", "failed")
+        }
+    }
+
 }
 
 project(':util') {
